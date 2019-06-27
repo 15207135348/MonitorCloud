@@ -1,0 +1,680 @@
+<title>监控面板</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主机监控</a>
+        <a><cite>监控面板</cite></a>
+        <a><cite>监控面板</cite></a>
+    </div>
+</div>
+<div class="layui-fluid" id="LAY-app-table">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md10">
+            <div class="layui-row layui-card">
+                <div class="layui-card-header">基本信息</div>
+                <div class="layui-row layui-col-space15 layui-card-body" align="center">
+                    <div class="layui-col-md4">
+                        <!--主机图标-->
+                        <div class="layui-row">
+                            <div id="host-icon" class="host-icon-linux-size-70">
+                            </div>
+                        </div>
+                        <!--主机状态-->
+                        <div class="layui-row host-status-running" id="host-status" style="margin: 5px"></div>
+                        <!--主机名称-->
+                        <div class="layui-row" id="host-name" style="margin: 10px"></div>
+                        <!--主机操作-->
+                        <div class="layui-row host-options" style="margin: 20px">
+                            <div class="layui-btn-group" id="host-option-group">
+                                <button id="host-option-open" class="layui-btn layui-btn-sm layui-btn-primary">重启</button>
+                                <button id="host-option-connect" class="layui-btn layui-btn-sm layui-btn-primary">连接</button>
+                                <button id="host-option-more" class="layui-btn layui-btn-sm layui-btn-primary">
+                                    <ul class="layui-icon">&#xe654;
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--主机基本信息-->
+                    <div class="layui-col-md8">
+                        <table class="layui-table layui-text" style="text-align: center">
+                            <colgroup>
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <td>系统</td>
+                                <td id="host-system">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>IPv4地址</td>
+                                <td id="host-ipv4-address"></td>
+                            </tr>
+                            <tr>
+                                <td>MAC地址</td>
+                                <td id="host-mac-address"></td>
+                            </tr>
+                            <tr>
+                                <td>规格</td>
+                                <td id="host-flavor">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>已监控时长</td>
+                                <td id="host-monitor-duration"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row" align="right">
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-sm layui-btn-primary time-select-btn">
+                        实时
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-primary time-select-btn">
+                        近1小时
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-primary time-select-btn">
+                        近24小时
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-primary time-select-btn">
+                        近7天
+                    </button>
+                </div>
+            </div>
+            <div class="layui-row layui-card">
+                <div class="layui-card-header" id="data-view-header">
+                    监控概览
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview">
+                        <div carousel-item id="LAY-index-dataview">
+                            <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                            <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                            <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                            <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                            <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md2">
+            <div class="layui-card" style="padding:15px">
+                <div class="layui-card-header">
+                    监控主机
+                </div>
+                <div class="layui-card-body">
+                    <ul id="host-tree-1"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['tree', "admin", "carousel"], function(){
+
+        //初始化全局变量
+        var $ = layui.$, t = layui.carousel, a = layui.element, i = layui.device(),
+            hostNodes = [], currentNode = null,
+            chartCanvas = layui.$("#LAY-index-dataview").children("div"),
+            charts = [],
+            chartIndex = 0,
+            timeBtnGroup = document.getElementsByClassName("time-select-btn"),
+            timeBtnIndex = 1,
+            realTimeDataMap = {
+                "a":[], "b":[], "c":[], "e":[], "f":[], "g":[], //cpu
+                "h":[], "i":[], "j":[],                                 //内存
+                "k":[], "l":[],                                         //磁盘IO速率(kb/s)
+                "m":[], "n":[],                                         //磁盘IO频率(次/s)
+                "o":[], "p":[]                                          //网络IO速率(kb/s)
+            },
+            historyDataMap = {
+                "T":[],                                                 //时间
+                "a":[], "b":[], "c":[], "d":[], "e":[], "f":[], "g":[], //cpu
+                "h":[], "i":[], "j":[],                                 //内存
+                "k":[], "l":[],                                         //磁盘IO速率(kb/s)
+                "m":[], "n":[],                                         //磁盘IO频率(次/s)
+                "o":[], "p":[]                                          //网络IO速率(kb/s)
+            }, timeRange = {start:0,stop:0}, oneDay = 3600*24*1000;
+        var realTimeOptions = [{
+            tooltip: {trigger: "axis"},
+            legend: {data:['User','Nice','System','IOWait','Irq', 'SoftIrq']},
+            xAxis: {type: "time"},
+            yAxis: {type: "value", name: 'CPU利用率', min: 0, max: 1},
+            series: [{
+                name: "User",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["a"]
+            }, {
+                name: "Nice",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["b"]
+            },{
+                name: "System",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["c"]
+            },{
+                name: "IOWait",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["e"]
+            },{
+                name: "Irq",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["f"]
+            },{
+                name: "SoftIrq",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["g"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["Actual", "Buffers","Cached"]},
+            xAxis: {type: "time"},
+            yAxis: {type: "value", name: '内存使用率', min:0, max:1},
+            series: [{
+                name: "Actual",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["j"]
+            },{
+                name: "Buffers",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["i"]
+            },{
+                name: "Cached",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: realTimeDataMap["h"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["读", "写"]},
+            xAxis: {type: "time"},
+            yAxis: {type: "value", name: '磁盘IO速率(kb/s)'},
+            series: [{
+                name: "读",
+                type: "line",
+                itemStyle: {normal: {}},
+                data: realTimeDataMap["k"]
+            }, {
+                name: "写",
+                type: "line",
+                itemStyle: {normal: {}},
+                data: realTimeDataMap["l"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["读", "写"]},
+            xAxis: {type: "time"},
+            yAxis: {type: "value", name: '磁盘IO频率(次/s)'},
+            series: [{
+                name: "读",
+                type: "line",
+                itemStyle: {normal: {}},
+                data: realTimeDataMap["m"]
+            }, {
+                name: "写",
+                type: "line",
+                itemStyle: {normal: {}},
+                data: realTimeDataMap["n"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["进站", "出站"]},
+            xAxis: {type: "time"},
+            yAxis: {type: "value", name: '网卡IO速率(kb/s)'},
+            series: [{
+                name: "进站",
+                type: "line",
+                itemStyle: {normal: {}},
+                data: realTimeDataMap["o"]
+            }, {
+                name: "出站",
+                type: "line",
+                itemStyle: {normal: {}},
+                data: realTimeDataMap["p"]
+            }]
+        }];
+        var historyOptions = [{
+            tooltip: {trigger: "axis"},
+            legend: {data:['User','Nice','System','IOWait','Irq','SoftIrq']},
+            xAxis: [{
+                type: "category",
+                boundaryGap: false,
+                data: historyDataMap["T"]
+            }],
+            yAxis: [{
+                type: "value",
+                name: 'CPU使用率',
+                min: 0,
+                max: 1
+            }],
+            series: [{
+                name: "User",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["a"]
+            },{
+                name: "Nice",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["b"]
+            },{
+                name: "System",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["c"]
+            },{
+                name: "IOWait",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["e"]
+            },{
+                name: "Irq",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["f"]
+            },{
+                name: "SoftIrq",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["g"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["Actual", "Buffers", "Cached"]},
+            xAxis: [{
+                type: "category",
+                boundaryGap: false,
+                data: historyDataMap["T"]
+            }],
+            yAxis: [{
+                type: "value",
+                name: '内存利用率',
+                min:0,
+                max:1
+            }],
+            series: [{
+                name: "Actual",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["j"]
+            }, {
+                name: "Buffers",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["i"]
+            }, {
+                name: "Cached",
+                type: "line",
+                stack: '总量',
+                itemStyle: {normal: {areaStyle: {type: "default"}}},
+                data: historyDataMap["h"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["读", "写"]},
+            xAxis: [{
+                type: "category",
+                boundaryGap: false,
+                data: historyDataMap["T"]
+            }],
+            yAxis: [{
+                type: "value",
+                name: '磁盘IO速率(kb/s)'
+            }],
+            series: [{
+                name: "读",
+                type: "line",
+
+                itemStyle: {normal: {}},
+                data: historyDataMap["k"]
+            }, {
+                name: "写",
+                type: "line",
+
+                itemStyle: {normal: {}},
+                data: historyDataMap["l"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["读", "写"]},
+            xAxis: [{
+                type: "category",
+                boundaryGap: false,
+                data: historyDataMap["T"]
+            }],
+            yAxis: [{
+                type: "value",
+                name: '磁盘IO频率(次/s)'
+            }],
+            series: [{
+                name: "读",
+                type: "line",
+
+                itemStyle: {normal: {}},
+                data: historyDataMap["m"]
+            }, {
+                name: "写",
+                type: "line",
+
+                itemStyle: {normal: {}},
+                data: historyDataMap["n"]
+            }]
+        },{
+            tooltip: {trigger: "axis"},
+            legend: {data: ["进站", "出站"]},
+            xAxis: [{
+                type: "category",
+                boundaryGap: false,
+                data: historyDataMap["T"]
+            }],
+            yAxis: [{
+                type: "value",
+                name: '网络IO速率(kb/s)'
+            }],
+            series: [{
+                name: "读",
+                type: "line",
+
+                itemStyle: {normal: {}},
+                data: historyDataMap["o"]
+            }, {
+                name: "写",
+                type: "line",
+
+                itemStyle: {normal: {}},
+                data: historyDataMap["p"]
+            }]
+        }];
+        //刷新图
+        var update = function (i,b) {
+            if(charts[i] === undefined) {
+                charts[i] = echarts.init(chartCanvas[i], 'shine');
+            }
+            charts[i].setOption(b ? realTimeOptions[i] : historyOptions[i]);
+            window.onresize = charts[i].resize;
+        };
+        //展示主机信息
+        var showBaseInfo = function (item) {
+            if(item === null){
+                return;
+            }
+            var status = document.getElementById("host-status");
+            if (item["connected"]){
+                status.className = "layui-row host-status-running";
+                status.innerText = "正在运行";
+            }else {
+                status.className = "layui-row host-status-closed";
+                status.innerText = "未知状态";
+            }
+            //主机基本信息
+            document.getElementById("host-name").innerText=item["name"];
+            document.getElementById("host-system").innerText=item["system"];
+            document.getElementById("host-mac-address").innerText=item["mac"];
+            document.getElementById("host-ipv4-address").innerText=item["ipv4"];
+            document.getElementById("host-flavor").innerText=item["cpu"]+"核 "+item["ram"]+"内存 "+item["disk"]+"存储";
+            document.getElementById("host-monitor-duration").innerText=item["duration"];
+        };
+        var timeFormat = function(ts){
+            var now = new Date(ts*1000);
+            var year=now.getFullYear();
+            var month=now.getMonth()+1;
+            var date=now.getDate();
+            var hour=now.getHours();
+            var minute=now.getMinutes();
+            var second=now.getSeconds();
+            return year+"/"+month+"/"+date+"\n"+hour+":"+minute+":"+second;
+        };
+        var showHistoryData = function (mac) {
+            if(socket !==null) {
+                socket.close(3000,"主动关闭");
+                socket = null;
+            }
+            var strings = ["Cpu","Ram","DiskSpeed","DiskCount","Net"];
+            layui.$.ajax({
+                url:"/metrics/find"+strings[chartIndex]+"ByTime",
+                type:"POST",
+                async:true,
+                dataType:"json",
+                data:{
+                    "mac":mac,
+                    "start":timeRange.start,
+                    "stop":timeRange.stop
+                },
+                success:function(result) {
+                    for(var k in historyDataMap){
+                        historyDataMap[k].splice(0,historyDataMap[k].length);
+                    }
+                    for(var i=0;i!==result.length;++i) {
+                        var time = result[i]["T"];
+                        var json = result[i]["O"];
+                        for(var q in json) {
+                            historyDataMap[q].push(json[q]);
+                        }
+                        historyDataMap["T"].push(timeFormat(time));
+                    }
+                    update(chartIndex,false);
+                },
+                error:function(msg){
+                    console.log("error:"+msg);
+                }
+            });
+        };
+        var updateRealTimeMap = function (json) {
+            var time = new Date(json["T"]*1000);
+            for(var k in json)
+            {
+                var value = [time,json[k]];
+                var array = realTimeDataMap[k];
+                if(array === undefined) continue;
+                if(array.length > 200) array.shift();
+                array.push({value:value});
+            }
+        };
+        var socket = null;
+        var showRealTimeData = function (mac) {
+            if(socket !== null) {
+                socket.close(1000,"主动关闭");
+                socket = null;
+            }
+            socket = new WebSocket('ws://59.69.101.206:8880/websocket/'+ mac);
+            socket.onerror = function (event)
+            {
+                console.log("连接失败");
+            };
+            socket.onopen = function (event)
+            {
+                console.log("已连接");
+            };
+            socket.onclose = function (ev) {
+                console.log("连接关闭");
+            };
+            socket.onmessage = function (event) {
+                updateRealTimeMap(JSON.parse(event.data));
+                update(chartIndex,true);
+            };
+        };
+        var getStartTimeAndStopTime = function () {
+            var dict = {};
+            switch (timeBtnIndex){
+                case 0:{
+                    dict.stop = new Date().getTime();
+                    dict.start = dict.stop-oneDay/24/2;
+                }break;
+                case 1:{
+                    dict.stop = new Date().getTime();
+                    dict.start = dict.stop-oneDay/24;
+                }break;
+                case 2:{
+                    dict.stop = new Date().getTime();
+                    dict.start = dict.stop-oneDay;
+                }break;
+                case 3:{
+                    dict.stop = new Date().getTime();
+                    dict.start = dict.stop-oneDay*7;
+                }break;
+                default:return;
+            }
+            return dict;
+        };
+        //获取当前用户的所有虚拟机,并生成虚拟机tree
+        $.ajax({
+            url:"/baseInfo/listMonitoredHosts",
+            type:"POST",
+            async:false,
+            dataType:"json",
+            data:{},
+            success:function(result) {
+                if (!result.success){
+                    layui.layer.msg(result.message, {
+                        offset: '15px'
+                        ,icon: 2
+                        ,time: 2000
+                    },function () {
+                        window.location.href = 'login';
+                    });
+                }else{
+                    hostNodes = result.message;
+                    if(hostNodes.length === 0) {
+                        layui.layer.msg("请先接入您要监控的主机", {
+                            offset: '15px'
+                            ,icon: 6 //笑脸
+                            ,time: 2000
+                        });
+                    }else {
+                        currentNode = hostNodes[0];
+                        showBaseInfo(currentNode);
+                    }
+                }
+            },
+            error:function(msg){
+                layui.layer.msg("error"+msg, {
+                    offset: '15px'
+                    ,icon: 3
+                    ,time: 2000
+                });
+            }
+        });
+        //初始化页面元素:tree
+        layui.tree({
+            elem: '#host-tree-1' //指定元素
+            ,target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
+            ,click: function(item){
+                currentNode = item;
+                showBaseInfo(currentNode);
+                if(timeBtnIndex === 0){
+                    showRealTimeData(item.mac);
+                }else{
+                    showHistoryData(item.mac);
+                }
+            }
+            ,nodes: hostNodes
+        });
+        //初始化页面元素:carousel
+        $(".layadmin-carousel").each(function () {
+            var a = $(this);
+            t.render({
+                elem: this,
+                width: "100%",
+                arrow: "none",
+                interval: a.data("interval"),
+                autoplay: a.data("autoplay") === true,
+                trigger: i.ios || i.android ? "click" : "hover",
+                anim: a.data("anim")
+            })
+        });
+        a.render("progress");
+        if (chartCanvas[0]) {
+            timeRange = getStartTimeAndStopTime();
+            if(currentNode !== null){
+                if(timeBtnIndex === 0){
+                    showRealTimeData(currentNode.mac);
+                }else{
+                    showHistoryData(currentNode.mac);
+                }
+            }
+            layui.carousel.on("change(LAY-index-dataview)", function (e) {
+                //切换后更新索引
+                chartIndex = e.index;
+                if(currentNode !== null){
+                    if(timeBtnIndex === 0){
+                        showRealTimeData(currentNode.mac);
+                    }else{
+                        showHistoryData(currentNode.mac);
+                    }
+                }
+            });
+            layui.admin.on("side", function () {
+                setTimeout(function () {update(chartIndex,timeBtnIndex===0)}, 300)
+            });
+            layui.admin.on("hash(tab)", function () {
+                layui.router().path.join("") || update(chartIndex,timeBtnIndex===0)
+            });
+        }
+        //实时数据
+        timeBtnGroup[0].onclick = function () {
+            timeBtnIndex = 0;
+            timeRange = getStartTimeAndStopTime();
+            if(currentNode !== null) {
+                showRealTimeData(currentNode.mac);
+            }
+        };
+        //获取任意时间段的历史数据
+        timeBtnGroup[1].onclick = function () {
+            timeBtnIndex = 1;
+            timeRange = getStartTimeAndStopTime();
+            if(currentNode !== null) {
+                showHistoryData(currentNode.mac);
+            }
+        };
+        //获取1天历史数据
+        timeBtnGroup[2].onclick = function () {
+            timeBtnIndex = 2;
+            timeRange = getStartTimeAndStopTime();
+            if(currentNode !== null) {
+                showHistoryData(currentNode.mac);
+            }
+        };
+        //获取7天历史数据
+        timeBtnGroup[3].onclick = function () {
+            timeBtnIndex = 3;
+            timeRange = getStartTimeAndStopTime();
+            if(currentNode !== null) {
+                showHistoryData(currentNode.mac);
+            }
+        };
+    });
+</script>

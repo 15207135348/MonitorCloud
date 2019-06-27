@@ -1,0 +1,34 @@
+<title>3D面板</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主机监控</a>
+        <a><cite>3D面板</cite></a>
+        <a><cite>3D面板</cite></a>
+    </div>
+</div>
+<div class="layui-fluid" id="LAY-app-table">
+    <iframe scrolling="no" id="main" style="min-height:600px;width:100%;height:100%;"
+            src="http://www.thingjs.com/guide/sampleindex.html?name=/uploads/wechat/MTUyMDcxMzUzNDg=/1710机房.js?n=0.7776801579768993">
+    </iframe>
+</div>
+<script>
+    // 计算页面的实际高度，iframe自适应会用到
+    function calcPageHeight(doc) {
+        var cHeight = Math.max(doc.body.clientHeight, doc.documentElement.clientHeight);
+        var sHeight = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+        return Math.max(cHeight, sHeight);
+    }
+    //根据ID获取iframe对象
+    var iframe = document.getElementById('main');
+    iframe.onload = function() {
+        //解决打开高度太高的页面后再打开高度较小页面滚动条不收缩
+        iframe.style.height='0px';
+        var iDoc = ifr.contentDocument || ifr.document;
+        var height = calcPageHeight(iDoc);
+        if(height < 850){
+            height = 850;
+        }
+        iframe.style.height = height + 'px';
+    }
+</script>

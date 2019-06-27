@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>创建实例向导</title>
+    <link rel="stylesheet" href="../../../../style/components-20180705192840.css">
+    <link rel="stylesheet" href="../../../../style/bootstrap-20180705192840.css">
+    <link rel="stylesheet" href="../../../../style/hosts-css-20180705192840.css">
+</head>
+<body>
+<div class="dialog-content dialog-content-notitle" id="first" style="display: block">
+    <div class="dialog-wrap">
+        <div class="step-dialog-container create-proxy-panel">
+            <div class="middle-bg" style="width: 700px;left: 0">
+                <div class="left-bg">
+                    <div>
+                        <div class="title">
+                            创建虚拟机
+                        </div>
+                        <div class="step step1">
+							<span class="ft ft-left">
+								1. 设置主机名称
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                        <div class="step step2">
+							<span class="ft ft-right">
+								2. 选择镜像类型
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                        <div class="step step3">
+							<span class="ft ft-right">
+								3. 选择规格大小
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                        <div class="step step4">
+							<span class="ft ft-right">
+								4. 完成
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-img">
+                    </div>
+                </div>
+                <div class="right-bg">
+                    <div class="right-container">
+                        <div>
+                            <div class="right-content-area">
+                                <div class="step-title">
+                                    设置主机名称
+                                </div>
+                                <div class="proxy-name-title">
+                                    请为您本次要创建的主机取一个响亮的名字：
+                                </div>
+                                <div class="form-group">
+                                    <label for="host-name"></label><input type="text" maxlength="32" value="" class="form-control" id="host-name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-btns one">
+                        <div role="toolbar" class="btn-toolbar">
+                            <button type="button" class="btn btn-lg btn-success" id="first-next">
+                                下一步
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear-both">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-window create-proxy-dialog" id="second" style="display: none">
+    <div class="dialog-content dialog-content-notitle">
+        <div class="dialog-wrap">
+            <div class="step-dialog-container create-proxy-panel">
+                <div class="middle-bg" style="width: 925px; left: 0px;">
+                    <div class="left-bg">
+                        <div>
+                            <div class="title">
+                                创建虚拟机
+                            </div>
+                            <div class="step step1">
+							<span class="ft ft-left">
+								1. 设置主机名称
+							</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step2">
+							<span class="ft ft-right">
+								2. 选择镜像类型
+							</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                            <div class="step step3">
+							<span class="ft ft-right">
+								3. 选择规格大小
+							</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                            <div class="step step4">
+							<span class="ft ft-right">
+								4. 完成
+							</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bg">
+                        <div class="right-container">
+                            <div>
+                                <div class="right-content-area">
+                                    <div class="step-title">
+                                        选择镜像类型
+                                    </div>
+                                    <div class="proxy-name-title">
+                                        请为您本次要创建的主机选择镜像类型：
+                                    </div>
+                                    <div class="form-group">
+                                        <label><select name="host-image" id="host-image"></select></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-btns two">
+                            <div role="toolbar" class="btn-toolbar">
+                                <button type="button" class="btn btn-lg btn-default" id="second-last">
+                                    上一步
+                                </button>
+                                <button type="button" class="btn btn-lg btn-success" id="second-next">
+                                    下一步
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-both">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-window create-proxy-dialog" id="third" style="display: none">
+    <div class="dialog-content dialog-content-notitle">
+        <div class="dialog-wrap">
+            <div class="step-dialog-container create-proxy-panel">
+                <div class="middle-bg" style="width: 925px; left: 0px;">
+                    <div class="left-bg">
+                        <div>
+                            <div class="title">
+                                创建虚拟机
+                            </div>
+                            <div class="step step1">
+							<span class="ft ft-left">
+								1. 设置主机名称
+							</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step2">
+							<span class="ft ft-right">
+								2. 选择镜像类型
+							</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step3">
+							<span class="ft ft-right">
+								3. 选择规格类型
+							</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                            <div class="step step4">
+							<span class="ft ft-right">
+								4. 完成
+							</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bg">
+                        <div class="right-container">
+                            <div>
+                                <div class="right-content-area">
+                                    <div class="step-title">
+                                        选择规格类型
+                                    </div>
+                                    <div class="proxy-name-title">
+                                        请为您本次要创建的规格类型：
+                                    </div>
+                                    <div class="form-group">
+                                        <label><select name="host-flavor" id="host-flavor"></select></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-btns two">
+                            <div role="toolbar" class="btn-toolbar">
+                                <button type="button" class="btn btn-lg btn-default" id="third-last">
+                                    上一步
+                                </button>
+                                <button type="button" class="btn btn-lg btn-success" id="third-next">
+                                    下一步
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-both">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-window create-proxy-dialog" id="fourth" style="display: none">
+    <div class="dialog-content dialog-content-notitle">
+        <div class="dialog-wrap">
+            <div class="step-dialog-container create-proxy-panel">
+                <div class="middle-bg" style="width: 925px; left: 0px;">
+                    <div class="left-bg">
+                        <div>
+                            <div class="title">
+                                创建虚拟机
+                            </div>
+                            <div class="step step1">
+							<span class="ft ft-left">
+								1. 设置主机名称
+							</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step2">
+							<span class="ft ft-right">
+								2. 选择镜像类型
+							</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step3">
+							<span class="ft ft-right">
+								3. 选择规格类型
+							</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step4">
+							<span class="ft ft-right">
+								4. 完成
+							</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bg">
+                        <div class="right-container">
+                            <div>
+                                <div class="right-content-area">
+                                    <div class="step-title">
+                                        设置初始化脚本（可选）
+                                    </div>
+                                    <div class="script-container" id="script-container">
+                                        <label for="user-data">
+                                            可通过脚本配置虚拟机的登陆密码
+                                        </label>
+                                        <textarea class="script-panel" id="user-data"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-btns two">
+                            <div role="toolbar" class="btn-toolbar">
+                                <button type="button" class="btn btn-lg btn-default" id="fourth-last">
+                                    上一步
+                                </button>
+                                <button type="button" class="btn btn-lg btn-success" id="fourth-next">
+                                    创建实例
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-both">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/content/layui/rc/layui.js"></script>
+<script>
+    layui.use('layer', function(){
+        var layer = layui.layer, $ = layui.$;
+        //初始化镜像
+        $.ajax({
+            type:"POST",
+            async:false,     //设为同步请求（异步加载的话后面的遍历方法获取不到option）
+            url:"/nova/showImages",//获取option值得方法返回LIST<String>类型
+            dataType:"JSON",
+            success:function(result){
+                var images = result.images;
+                for(var i=0;i!==images.length;++i){        //遍历输出LIST添加为option
+                    $("#host-image").append("<option value='"+images[i]["id"]+"'>"+images[i]["name"]+"</option>");
+                }
+            }
+        });
+        //初始化规格
+        $.ajax({
+            type:"POST",
+            async:false,     //设为同步请求（异步加载的话后面的遍历方法获取不到option）
+            url:"/nova/showFlavors",//获取option值得方法返回LIST<String>类型
+            dataType:"JSON",
+            success:function(result){
+                var flavors = result.flavors;
+                for(var i=0;i!==flavors.length;++i){        //遍历输出LIST添加为option
+                    $("#host-flavor").append("<option value='"+flavors[i]["id"]+"'>"+flavors[i]["name"]+"</option>");
+                }
+            }
+        });
+        document.getElementById("first-next").onclick = function (ev) {
+            document.getElementById("first").style.display="none";
+            document.getElementById("second").style.display="block";
+        };
+        document.getElementById("second-last").onclick = function (ev) {
+            document.getElementById("first").style.display="block";
+            document.getElementById("second").style.display="none";
+        };
+        document.getElementById("second-next").onclick = function (ev) {
+            document.getElementById("third").style.display="block";
+            document.getElementById("second").style.display="none";
+        };
+        document.getElementById("third-last").onclick = function (ev) {
+            document.getElementById("second").style.display="block";
+            document.getElementById("third").style.display="none";
+        };
+        document.getElementById("third-next").onclick = function (ev) {
+            document.getElementById("fourth").style.display="block";
+            document.getElementById("third").style.display="none";
+        };
+        document.getElementById("fourth-last").onclick = function (ev) {
+            document.getElementById("third").style.display="block";
+            document.getElementById("fourth").style.display="none";
+        };
+        document.getElementById("fourth-next").onclick = function (ev) {
+            //检验输入是否合法
+            var hostname = document.getElementById("host-name").value;
+            var imageSelect = document.getElementById("host-image");
+            var image = imageSelect.options[imageSelect.selectedIndex].value;
+            var flavorSelect = document.getElementById("host-flavor");
+            var flavor = flavorSelect.options[flavorSelect.selectedIndex].value;
+            var userData = document.getElementById("user-data").value;
+            $.ajax({
+                url: "/nova/createVHost",
+                type: "POST",
+                async: true,
+                dataType: "text",
+                data: {
+                    hostname: hostname,
+                    image:image,
+                    flavor:flavor,
+                    userData:userData
+                },
+                success: function (result) {
+                    var layer = parent.layui.layer;
+                    var index = layer.getFrameIndex(window.name);
+                    layer.close(index);
+                    parent.layui.table.reload('hosts',{});
+                },
+                error: function (msg) {
+                    console.log("error:" + msg);
+                }
+            });
+        };
+    });
+</script>
+</body>
+</html>

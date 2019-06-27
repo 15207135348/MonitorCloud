@@ -1,0 +1,162 @@
+<title>IP黑名单</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主机监控</a>
+        <a><cite>IP黑名单</cite></a>
+        <a><cite>IP黑名单</cite></a>
+    </div>
+</div>
+<div class="layui-fluid" id="LAY-app-table">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-row layui-card">
+                <div class="layui-card-header">禁用的IP</div>
+                <div class="layui-row layui-col-space15 layui-card-body">
+                    <table class="layui-hide" id="iptables" lay-filter="iptables"></table>
+                    <script type="text/html" id="toolbar-iptables">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-sm" id="addIP">添加</button>
+                            <button class="layui-btn layui-btn-sm" id="delChecked">删除</button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="bar-iptables">
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table'], function(){
+        //初始化全局变量
+        var $ = layui.$,
+            layer = layui.layer,
+            table = layui.table,
+            option = {
+                elem: '#iptables'
+                , url: '/iptables/listIP'
+                , toolbar: '#toolbar-iptables'
+                , method: 'post'
+                , height: 600 //容器高度
+                , cols: [[
+                    {type: 'checkbox', fixed: 'left'},
+                    {field: 'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true},
+                    {field: 'ip', edit: 'text', title: '拉黑的IP', width: 200, sort: true},
+                    {field: 'reason', edit: 'text', title: '拉黑原因'},
+                    {fixed: 'right', title:'操作', toolbar: '#bar-iptables', width:200}
+                ]]
+                , page: true
+                ,done: function(res){
+                    console.log(res);
+                }
+            };
+        //获取当前用户的所有虚拟机,并生成虚拟机tree
+        var tableObj = table.render(option);
+        var delIP = function (ip) {
+            $.ajax({
+                url:"/iptables/delIP",
+                type:"POST",
+                async:false,
+                dataType:"json",
+                data:{ip:ip},
+                success:function(result) {
+                },
+                error:function(msg){
+                    console.log(msg);
+                }
+            });
+        };
+        var onclick = function () {
+            document.getElementById("addIP").onclick = function (ev) {
+                var ip, reason;
+                layer.prompt({formType: 0,title:'IP'}, function(value1, index1){
+                    ip = value1;
+                    layer.close(index1);
+                    layer.prompt({formType: 2, title: '原因'}, function(value2, index2){
+                        reason = value2;
+                        layer.close(index2);
+                        $.ajax({
+                            url:"/iptables/addIP",
+                            type:"POST",
+                            async:true,
+                            dataType:"json",
+                            data:{
+                                ip:ip,
+                                reason:reason
+                            },
+                            success:function(result) {
+                                if (result.success) {
+                                    tableObj.reload(option);
+                                    onclick();
+                                } else {
+                                    layer.msg(result.message);
+                                }
+                            },
+                            error:function(msg){
+                                console.log(msg);
+                            }
+                        });
+                    });
+
+                });
+            };
+            document.getElementById("delChecked").onclick = function (ev) {
+                var checkStatus = table.checkStatus("iptables");
+                layer.confirm('真的删除行么', function(index){
+                    var data = checkStatus.data;
+                    var ips = [];
+                    for(var i = 0; i!==data.length; ++i)
+                    {
+                        ips.push(data[i].ip);
+                    }
+                    var ip = ips.join(",");
+                    delIP(ip);
+                    tableObj.reload(option);
+                    onclick();
+                    layer.close(index);
+                });
+            };
+        };
+        onclick();
+        //监听行工具事件
+        table.on('tool(iptables)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    delIP(data.ip);
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+        //监听单元格编辑
+        table.on('edit(iptables)', function(obj){
+
+            console.log("edit");
+            //获取当前用户的所有虚拟机,并生成虚拟机tree
+            $.ajax({
+                url:"/iptables/edit",
+                type:"POST",
+                async:false,
+                dataType:"json",
+                data:{
+                    id:obj.data.id,
+                    field:obj.field,
+                    value:obj.value
+                },
+                success:function(result) {
+                    if(!result.success) {
+                        tableObj.reload(option);
+                        onclick();
+                    }
+                    layer.msg(result.message);
+                },
+                error:function(msg){
+                    console.log(msg);
+                }
+            });
+        });
+    });
+</script>

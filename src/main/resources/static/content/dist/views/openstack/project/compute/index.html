@@ -1,0 +1,166 @@
+<title>计算</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">私有云</a>
+        <a><cite>计算</cite></a>
+        <a><cite>计算</cite></a>
+    </div>
+</div>
+<style>
+    /* 这段样式只是用于演示 */
+</style>
+<div class="layui-fluid" id="LAY-picManage-poster">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-row layui-card">
+                <div class="layui-card-header">私有云主机</div>
+                <div class="layui-row layui-col-space15 layui-card-body" align="right">
+                    <table class="layui-hide" id="hosts" lay-filter="hosts"></table>
+                    <script type="text/html" id="nameTpl">
+                        <a href="/nova/connectHost?hostId={{d.id}}" class="layui-table-link" target="_blank">{{ d.name }}</a>
+                    </script>
+                    <script type="text/html" id="toolbar-compute">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-sm" id="createHost">创建实例</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-danger" id="deleteHosts">删除实例</button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="bar-compute">
+                        <a class="layui-btn layui-btn-xs" lay-event="reboot">重启</a>
+                        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use('table', function(){
+        var table = layui.table,
+            $ = layui.$;
+        table.render({
+            elem: '#hosts'
+            , url: '/nova/getAllVHostInfo'
+            , toolbar: '#toolbar-compute'
+            , where: {}
+            , method: 'post'
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID'}
+                ,{field: 'name', title: '主机', templet: '#nameTpl'}
+                ,{field: 'ip', title: '地址'}
+                ,{field: 'status', title: '状态'}
+                ,{field: 'time', title: '时间', sort: true}
+                ,{field: 'option', title: '操作',toolbar: '#bar-compute'}
+            ]]
+
+            ,title: '虚拟机列表'
+            ,page: true
+            ,done: function(res){
+                console.log(res);
+            }
+        });
+        //监听行工具事件
+        table.on('tool(hosts)', function(obj){
+            if(obj.event === 'delete'){
+                layer.confirm('真的删除虚拟机吗?', function(index){
+                    $.ajax({
+                        url:"/nova/action",
+                        type:"POST",
+                        async:true,
+                        dataType:"text",
+                        data:{
+                            hostId:obj.data.id,
+                            action:obj.event
+                        },
+                        success:function(result) {
+                            if(result === "false"){
+                                layer.msg('删除失败');
+                            }else{
+                                obj.del();
+                            }
+                        },
+                        error:function(msg){
+                            layer.msg('系统错误');
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else {
+                $.ajax({
+                    url:"/nova/action",
+                    type:"POST",
+                    async:true,
+                    dataType:"text",
+                    data:{
+                        hostId:obj.data.id,
+                        action:obj.event
+                    },
+                    success:function(result) {
+                        if(result === "false"){
+                            layer.msg('重启失败');
+                        }else {
+                            layer.msg('重启成功');
+                            obj.data.status = 'ACTIVE';
+                        }
+                    },
+                    error:function(msg){
+                        layer.msg('系统错误');
+                    }
+                });
+
+            }
+        });
+        layui.use('layer', function(){
+            var layer = layui.layer,
+                btn = document.getElementById("createHost");
+            btn.onclick = function (ev) {
+                layer.open({
+                    type: 2
+                    ,title: false //不显示标题栏
+                    ,closeBtn: true
+                    ,area: ['925px', '595px']
+                    ,shade: 0
+                    ,id: 'create' //设定一个id，防止重复弹出
+                    ,resize: false
+                    ,content: 'content/dist/views/openstack/project/compute/create.html'
+                    ,success: function(layer,index){
+
+                    }
+                });
+            };
+        });
+        var button = document.getElementById("deleteHosts");
+        button.onclick = function (ev) {
+            var checkStatus = table.checkStatus("hosts");
+            var data = checkStatus.data;
+            layer.confirm('确定删除所选虚拟机吗?', function(index){
+                for(var i=0;i!==data.length;++i) {
+                    $.ajax({
+                        url:"/nova/action",
+                        type:"POST",
+                        async:false,
+                        dataType:"text",
+                        data:{
+                            hostId:data[i].id,
+                            action:'delete'
+                        },
+                        success:function(result) {
+                            if(result === "false"){
+                                layer.msg('删除'+data[i].name+'失败');
+                            }else{
+                                table.reload('hosts',{});
+                            }
+                        },
+                        error:function(msg){
+                            layer.msg('系统错误');
+                        }
+                    });
+                }
+                layer.close(index);
+            });
+
+        }
+    });
+</script>

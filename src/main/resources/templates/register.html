@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>理工云管家</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="content/layui/rc/css/layui.css?t=201800202-1" media="all">
+    <link rel="stylesheet" href="content/dist/style/login.css" media="all">
+    <link rel="stylesheet" href="content/dist/style/admin.css">
+</head>
+<body>
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+    <div class="layadmin-user-login-main">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>理工云管家</h2>
+            <p>用心管理您的云主机</p>
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-nickname"></label>
+                <input type="text" name="nickname" id="LAY-user-login-nickname" lay-verify="nickname" placeholder="用户名" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+                <input type="password" name="password" id="LAY-user-login-password" lay-verify="pass" placeholder="密码" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-repass"></label>
+                <input type="password" name="repass" id="LAY-user-login-repass" lay-verify="required" placeholder="确认密码" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon-picture-fine" for="LAY-user-login-email"></label>
+                <input type="text" name="email" id="LAY-user-login-email" lay-verify="email" placeholder="邮箱" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" id="registerBtn">注 册</button>
+            </div>
+            <div class="layui-trans layui-form-item layadmin-user-login-other">
+                <a href="login" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-trans layadmin-user-login-footer">
+
+        <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>
+        <p>
+            <span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>
+            <span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>
+            <span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>
+        </p>
+    </div>
+
+</div>
+<script src="content/layui/rc/layui.js?t=201800202-1"></script>
+<script>
+    layui.use('layer', function(){
+
+        var $ = layui.$,
+            layer = layui.layer,
+            checkEmail = function(text){
+                var reg=/^\w+@\w+(\.[a-zA-Z]{2,3}){1,2}$/;
+                return reg.test(text);
+            },
+            checkUsername = function (text) {
+                var reg = /^[@a-zA-Z0-9_]{8,24}$/;
+                return reg.test(text);
+            };
+
+        document.getElementById("registerBtn").onclick = function (ev) {
+
+            document.getElementById("registerBtn").className = "layui-btn layui-btn-fluid layui-btn-disabled";
+
+            var username = $("#LAY-user-login-nickname").val();
+            var password = $("#LAY-user-login-password").val();
+            var email = $("#LAY-user-login-email").val();
+            if(!checkUsername(username)) return layer.msg('用户名为8到24位（字母，数字，下划线，@）');
+            if(password.length === 0) return layer.msg('密码不能为空');
+            if(password !== $("#LAY-user-login-repass").val()) return layer.msg('两次密码输入不一致');
+            if(!checkEmail(email)) return layer.msg('Email格式不正确，例如web@sohu.com');
+
+            $.ajax({
+                url: 'authentication/register',
+                type: 'post',
+                data: {
+                    username: username,
+                    password: password,
+                    email: email
+                },
+                success:function (result) {
+                    if (result.success === false){
+                        layer.msg(result.message, {
+                            offset: '15px'
+                            ,icon: 2
+                            ,time: 2000
+                        }, function () {
+                            document.getElementById("registerBtn").className = "layui-btn layui-btn-fluid";
+                        });
+                    } else {
+                        layer.msg(result.message, {
+                            offset: '15px'
+                            ,icon: 1
+                            ,time: 2000
+                        }, function(){
+                            window.location.href = 'login';
+                        });
+                    }
+                }
+            });
+        };
+    });
+</script>
+</body>
+</html>

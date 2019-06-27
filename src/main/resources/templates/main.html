@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>理工云管家</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="content/layui/rc/css/layui.css?t=201800202-1" media="all">
+    <link rel="stylesheet" href="content/dist/style/main.css">
+</head>
+<body>
+    <div id="LAY_app"></div>
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/shine.js"></script>
+    <script src="content/layui/rc/layui.js?t=201800202-1"></script>
+    <script>
+        layui.config({
+            base: './content/dist/',
+            version: new Date().getTime()
+        }).use('index', function(){
+
+        });
+    </script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</body>
+</html>

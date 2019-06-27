@@ -1,0 +1,83 @@
+<title>主机概览</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主机监控</a>
+        <a><cite>主机概览</cite></a>
+        <a><cite>主机概览</cite></a>
+    </div>
+</div>
+<div class="layui-fluid" id="LAY-app-table">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-row layui-card">
+                <div class="layui-card-header">主机列表</div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="imported-hosts-table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card" style="padding:15px">
+                <div class="layui-card-body" align="center">
+                    <button class="layui-btn" id="importBtn">
+                        接入新的主机
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['layer',"table"], function(){
+        //初始化全局变量
+        var table = layui.table,
+            reloadTable = function () {
+                table.render({
+                    elem: '#imported-hosts-table'
+                    , url: '/baseInfo/listImportedHosts'
+                    , where: {}
+                    , method: 'post'
+                    , height: 500 //容器高度
+                    , page: true
+                    , cols: [[
+                        {field: 'name', title: '主机名称',sort: true}
+                        ,{field: 'system', title: '操作系统',sort: true}
+                        ,{field: 'mac', title: 'mac地址',sort: true}
+                        ,{field: 'ipv4', title: 'IP地址',sort: true}
+                        ,{field: 'cpu', title: 'CPU数量',sort: true}
+                        ,{field: 'ram', title: '内存大小',sort: true}
+                        ,{field: 'disk', title: '磁盘容量',sort: true}
+                        ,{field: 'time', title: '接入时间',sort: true}
+                        ,{field: 'connected', title: '连接状态',sort: true}
+                    ]]
+                    ,done: function(res){
+                        console.log(res);
+                    }
+                    , initSort: {
+                        field: 'time' //排序字段，对应 cols 设定的各字段名
+                        ,type: 'desc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+                    }
+                });
+            };
+        reloadTable();
+        var layer = layui.layer, btn = document.getElementById("importBtn");
+        btn.onclick = function (ev) {
+            layer.open({
+                type: 2
+                ,title: false //不显示标题栏
+                ,closeBtn: true
+                ,area: ['925px', '595px']
+                ,shade: 0
+                ,id: 'guide' //设定一个id，防止重复弹出
+                ,resize: false
+                ,content: 'content/dist/views/monitor/import/guide.html'
+                ,success: function(layer,index){
+
+                }
+            });
+        };
+    });
+</script>

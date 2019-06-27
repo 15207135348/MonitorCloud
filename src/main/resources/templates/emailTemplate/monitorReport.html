@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>监控警告</title>
+</head>
+<body>
+    <h1 th:text="${hello}">Hello, Spring Boot!</h1>
+<table>
+    <tr>
+        <th>主机</th>
+        <th>CPU</th>
+        <th>内存</th>
+        <th>磁盘</th>
+        <th>网络</th>
+    </tr>
+    <tr th:each="host:${hostList}">
+        <td th:text="${host.name}">Master</td>
+        <td th:text="${host.cpu}">100%</td>
+        <td th:text="${host.mem}">100%</td>
+        <td th:text="${host.disk}">100%</td>
+        <td th:text="${host.net}">100%</td>
+    </tr>
+</table>
+
+<select>
+    <option th:each="user:${userList}" th:value="${user.id}" th:text="${user.name}">我是默认值</option>
+</select>
+
+</body>
+</html>
+

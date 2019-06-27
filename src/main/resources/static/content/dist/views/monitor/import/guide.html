@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>主机接入向导</title>
+    <link rel="stylesheet" href="../../../style/components-20180705192840.css">
+    <link rel="stylesheet" href="../../../style/bootstrap-20180705192840.css">
+    <link rel="stylesheet" href="../../../style/hosts-css-20180705192840.css">
+</head>
+<body>
+<div class="dialog-content dialog-content-notitle" id="first" style="display: block">
+    <div class="dialog-wrap">
+        <div class="step-dialog-container create-proxy-panel">
+            <div class="middle-bg" style="width: 700px;left: 0">
+                <div class="left-bg">
+                    <div>
+                        <div class="title">
+                            接入主机
+                        </div>
+                        <div class="tip">
+                            通过在主机中部署MonitorAgent将主机接入到理工云管家中
+                        </div>
+                        <div class="step step1 checked">
+							<span class="ft ft-right">
+								1. 主机接入指引
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                        <div class="step step2">
+							<span class="ft ft-left">
+								2. 设置启动参数
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                        <div class="step step3">
+							<span class="ft ft-right">
+								3. 获取部署脚本
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                        <div class="step step4">
+							<span class="ft ft-left">
+								4. 完成
+							</span>
+                            <div class="step-done">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-img">
+                    </div>
+                </div>
+                <div class="right-bg">
+                    <div class="right-container">
+                        <div>
+                            <div class="right-content-area">
+                                <div class="step-title">
+                                    主机接入指引
+                                </div>
+                                <div class="guide-desc">
+                                    <p>
+                                        您需要一台连接校园网的主机安装监控代理组件MonitorAgent，即可将主机接入到理工云管家中，具体流程如下：
+                                    </p>
+                                    <p>
+                                        1. 设置启动参数，我们将为您生成一段“理工云管家数据采集客户端的安装脚本”
+                                    </p>
+                                    <p>
+                                        2. 在您要接入的主机上按Ctrl+Alt+T，打开终端，cd到您想要安装的目录
+                                    </p>
+                                    <p>
+                                        3. 在当前目录下执行这段脚本
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-btns one">
+                        <div role="toolbar" class="btn-toolbar">
+                            <button type="button" class="btn btn-lg btn-success" id="first-next">
+                                下一步
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear-both">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-window create-proxy-dialog" id="second" style="display: none">
+    <div class="dialog-content dialog-content-notitle">
+        <div class="dialog-wrap">
+            <div class="step-dialog-container create-proxy-panel">
+                <div class="middle-bg" style="width: 925px; left: 0px;">
+                    <div class="left-bg">
+                        <div>
+                            <div class="title">
+                                导入主机
+                            </div>
+                            <div class="tip">
+                                通过在主机中部署MonitorAgent将主机接入到理工云管家中
+                            </div>
+                            <div class="step step1">
+                                <span class="ft ft-right">1. 主机接入指引</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step2 checked">
+                                <span class="ft ft-left">2. 设置启动参数</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                            <div class="step step3">
+                                <span class="ft ft-right">3. 获取部署脚本</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                            <div class="step step4">
+                                <span class="ft ft-left">4. 完成</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bg">
+                        <div class="right-container">
+                            <div>
+                                <div class="right-content-area">
+                                    <div class="step-title">
+                                        设置启动参数
+                                    </div>
+                                    <div class="proxy-name-title">
+                                        设置采集间隔(秒)：
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" maxlength="32" value="5" class="form-control" id="internal" title="采集间隔">
+                                        <hr />
+                                        <label for="selfStart">设置自启动</label>
+                                        <input type="checkbox" class="form-control" id="selfStart" name="自启动">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-btns two">
+                            <div role="toolbar" class="btn-toolbar">
+                                <button type="button" class="btn btn-lg btn-default" id="second-last">
+                                    上一步
+                                </button>
+                                <button type="button" class="btn btn-lg btn-success" id="second-next">
+                                    下一步
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-both">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-window create-proxy-dialog" id="third" style="display: none">
+    <div class="dialog-content dialog-content-notitle">
+        <div class="dialog-wrap">
+            <div class="step-dialog-container create-proxy-panel">
+                <div class="middle-bg" style="width: 925px; left: 0;">
+                    <div class="left-bg">
+                        <div>
+                            <div class="title">
+                                导入主机
+                            </div>
+                            <div class="tip">
+                                通过在主机中部署MonitorAgent将主机接入到理工云管家中
+                            </div>
+                            <div class="step step1">
+										<span class="ft ft-right">
+											1.主机接入指引
+										</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step2">
+										<span class="ft ft-left">
+											2.设置启动参数
+										</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step3 checked">
+										<span class="ft ft-right">
+											3.获取部署脚本
+										</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                            <div class="step step4">
+										<span class="ft ft-left">
+											4.完成
+										</span>
+                                <div class="step-done">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bg">
+                        <div class="right-container">
+                            <div>
+                                <div class="right-content-area">
+                                    <div class="step-title">
+                                        获取部署脚本
+                                        <div class="right-tips">
+                                            <a>
+                                                安装遇到问题？
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="script-container" id="script-container">
+                                        <div class="select-platform">
+                                            <div class="ant-radio-group">
+                                                <label>
+                                                    <span class="ant-radio ant-radio-checked ant-radio-checked-1">
+                                                        <span class="ant-radio-inner">
+                                                        </span>
+                                                        <input type="radio" value="linux" prefixcls="ant-radio" class="ant-radio-input">
+                                                    </span>
+                                                    <span class="linux">
+                                                        暂只支持Linux主机
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="title" style="margin-bottom: 10px;">
+                                            请在您的主机中以root身份执行以下脚本：
+                                        </div>
+                                        <textarea readonly="" class="script-panel" id="third-textarea">
+
+                                        </textarea>
+                                        <div class="btn-groups">
+                                            <a class="cls-copy-link" href="javascript:" id="third-copy">
+                                                复制脚本内容
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-btns two">
+                            <div role="toolbar" class="btn-toolbar">
+                                <button type="button" class="btn btn-lg btn-default" id="third-last">
+                                    上一步
+                                </button>
+                                <button type="button" class="btn btn-lg btn-success" id="third-next">
+                                    下一步
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-both">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-window create-proxy-dialog" id="fourth" style="display: none">
+    <div class="dialog-content dialog-content-notitle">
+        <div class="dialog-wrap">
+            <div class="step-dialog-container create-proxy-panel">
+                <div class="middle-bg" style="width: 925px; left: 0px;">
+                    <div class="left-bg">
+                        <div>
+                            <div class="title">
+                                导入主机
+                            </div>
+                            <div class="tip">
+                                通过在主机中部署MonitorAgent将主机接入到理工云管家中
+                            </div>
+                            <div class="step step1">
+								<span class="ft ft-right">
+									1. 主机接入指引
+								</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step2">
+								<span class="ft ft-left">
+									2. 设置启动参数
+								</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step3">
+								<span class="ft ft-right">
+									3. 获取部署脚本
+								</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                            <div class="step step4 checked">
+								<span class="ft ft-left">
+									4. 完成
+								</span>
+                                <div class="step-done ok">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bg">
+                        <div class="right-container">
+                            <div class="right-content-area">
+                                <div class="step-title">
+                                    完成
+                                </div>
+                                <div class="create-proxy-finished">
+                                    <div class="finished-img">
+                                    </div>
+                                    <div class="finished-desc">
+                                        <div class="finished-title" id="finished-title">
+                                            正在等待您的MonitorAgent的部署
+                                        </div>
+                                        <div class="finished-content" id="finished-content">
+                                            若您主机中的MonitorAgent尚未部署完成，您可以稍后继续通过脚本完成MonitorAgent的安装部署
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-btns one">
+                            <div role="toolbar" class="btn-toolbar">
+                                <button type="button" class="btn btn-lg btn-success" id="fourth-close">
+                                    关闭
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-both">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../../../layui/rc/layui.js?t=201800202-1"></script>
+<script>
+    layui.use('layer', function(){
+        var layer = layui.layer,
+            $ = layui.$;
+        document.getElementById("first-next").onclick = function (ev) {
+            document.getElementById("first").style.display="none";
+            document.getElementById("second").style.display="block";
+        };
+        document.getElementById("second-last").onclick = function (ev) {
+            document.getElementById("first").style.display="block";
+            document.getElementById("second").style.display="none";
+        };
+        document.getElementById("second-next").onclick = function (ev) {
+            //检验输入是否合法
+            var internal = document.getElementById("internal").value;
+            var selfStart = document.getElementById("selfStart").checked;
+            var reg = /^[0-9]*[1-9][0-9]*$/;
+            if(!reg.test(internal)) {
+                layer.tips('采集间隔是大于0的整数', input); //在元素的事件回调体中，follow直接赋予this即可
+                return;
+            }
+            $.ajax({
+                url: "/monitorAgent/getInstallScript",
+                type: "POST",
+                async: true,
+                dataType: "json",
+                data: {
+                    internal: internal * 1000,
+                    selfStart: selfStart
+                },
+                success: function (result) {
+                    if (result.success){
+                        document.getElementById("third-textarea").innerHTML = result.message;
+                    }
+                }
+            });
+            document.getElementById("third").style.display="block";
+            document.getElementById("second").style.display="none";
+        };
+        document.getElementById("third-last").onclick = function (ev) {
+            document.getElementById("second").style.display="block";
+            document.getElementById("third").style.display="none";
+        };
+        document.getElementById("third-copy").onclick = function (ev) {
+            var textarea=document.getElementById("third-textarea");
+            textarea.select();
+            document.execCommand("Copy");
+        };
+        document.getElementById("third-next").onclick = function (ev) {
+            document.getElementById("fourth").style.display="block";
+            document.getElementById("third").style.display="none";
+        };
+        document.getElementById("fourth-close").onclick = function (ev) {
+            var layer = parent.layui.layer;
+            var index = layer.getFrameIndex(window.name);
+            layer.close(index);
+        };
+        $.ajax({
+            url: "/authentication/username",
+            type: "POST",
+            async: true,
+            dataType: "json",
+            data: {},
+            success: function (result) {
+                //显示脚本
+                if(result.success){
+                    //打开WebSocket,以便第一时间获取安装结果
+                    var username = result.message;
+                    var socket = new WebSocket('ws://59.69.101.206:8880/websocket/'+ username);
+                    socket.onerror = function (event)
+                    {
+                        console.log("连接失败");
+                    };
+                    socket.onopen = function (event)
+                    {
+                        console.log("已连接");
+                    };
+                    socket.onclose = function (ev) {
+                        console.log("连接关闭");
+                    };
+                    socket.onmessage = function (event) {
+                        if(event.data === "ok") {
+                            document.getElementById("finished-title").innerText = "您主机中的MonitorAgent已成功部署";
+                        }
+                    };
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
